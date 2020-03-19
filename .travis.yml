@@ -1,0 +1,14 @@
+# environment setup
+language: swift
+os: osx
+osx_image: xcode11.3
+
+# jobs and stages to run
+jobs:
+  include:
+    - stage: Test
+      name: Unit tests
+      script:
+        - set -o pipefail
+        - xcodebuild -version
+        - xcodebuild test -scheme Calculator -destination platform=iOS\ Simulator,name=iPhone\ 8,OS=13.3 | xcpretty
