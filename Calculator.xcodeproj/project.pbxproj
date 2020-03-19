@@ -15,6 +15,7 @@
 		EDEB49E82421FD9800C9A868 /* CalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDEB49E72421FD9800C9A868 /* CalculatorTests.swift */; };
 		EDEB49F32422358F00C9A868 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDEB49F22422358F00C9A868 /* Helper.swift */; };
 		EDEB49F62422393F00C9A868 /* Calculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDEB49F52422393F00C9A868 /* Calculator.swift */; };
+		EDEB4A012422FD2F00C9A868 /* ObjcException.m in Sources */ = {isa = PBXBuildFile; fileRef = EDEB4A002422FD2F00C9A868 /* ObjcException.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,9 @@
 		EDEB49E92421FD9800C9A868 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EDEB49F22422358F00C9A868 /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		EDEB49F52422393F00C9A868 /* Calculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculator.swift; sourceTree = "<group>"; };
+		EDEB49FE2422FD2F00C9A868 /* Calculator-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Calculator-Bridging-Header.h"; sourceTree = "<group>"; };
+		EDEB49FF2422FD2F00C9A868 /* ObjcException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjcException.h; sourceTree = "<group>"; };
+		EDEB4A002422FD2F00C9A868 /* ObjcException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjcException.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +110,9 @@
 			isa = PBXGroup;
 			children = (
 				EDEB49F52422393F00C9A868 /* Calculator.swift */,
+				EDEB49FF2422FD2F00C9A868 /* ObjcException.h */,
+				EDEB4A002422FD2F00C9A868 /* ObjcException.m */,
+				EDEB49FE2422FD2F00C9A868 /* Calculator-Bridging-Header.h */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -160,6 +167,7 @@
 				TargetAttributes = {
 					EDEB49CC2421FD9600C9A868 = {
 						CreatedOnToolsVersion = 11.3.1;
+						LastSwiftMigration = 1130;
 					};
 					EDEB49E22421FD9800C9A868 = {
 						CreatedOnToolsVersion = 11.3.1;
@@ -214,6 +222,7 @@
 				EDEB49D52421FD9600C9A868 /* ViewController.swift in Sources */,
 				EDEB49F62422393F00C9A868 /* Calculator.swift in Sources */,
 				EDEB49D12421FD9600C9A868 /* AppDelegate.swift in Sources */,
+				EDEB4A012422FD2F00C9A868 /* ObjcException.m in Sources */,
 				EDEB49F32422358F00C9A868 /* Helper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -374,7 +383,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 74HVZ53TRR;
 				INFOPLIST_FILE = Calculator/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -383,6 +394,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.suraj.Calculator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Calculator/Model/Calculator-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -392,7 +406,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 74HVZ53TRR;
 				INFOPLIST_FILE = Calculator/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -401,6 +417,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.suraj.Calculator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Calculator/Model/Calculator-Bridging-Header.h";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
