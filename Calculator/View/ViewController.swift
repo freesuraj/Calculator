@@ -11,7 +11,7 @@ import UIKit
 class ViewController: UIViewController {
     
     @IBOutlet var inputLabel: UILabel!
-    @IBOutlet var outputLabel: UILabel!
+    @IBOutlet var outputLabel: EditableLabel!
     
     /// Maps a button to its type using the button tag
     private var buttonTagToInputTypeMapping: [Int: InputType] = [:]
@@ -22,13 +22,13 @@ class ViewController: UIViewController {
         calculator = Calculator()
         calculator.didUpdateInput = { [unowned self] input in
             self.inputLabel.text = input
-            print("input: \(input)")
         }
         calculator.didUpdateResult = { [unowned self] output in
             self.outputLabel.text = output
         }
         setupButtons()
         setupMapping()
+        listenForPaste()
     }
     
     private func setupButtons() {
@@ -68,8 +68,19 @@ class ViewController: UIViewController {
     
     @objc func didPressButton(_ button: UIButton) {
         guard let input = buttonTagToInputTypeMapping[button.tag] else { return }
-        calculator.add(input)
+        calculator.enter(input)
     }
-
+    
+    private func listenForPaste() {
+        outputLabel.requestToPaste = { [unowned self] in
+            guard let pasteboardText = UIPasteboard.general.string else { return }
+            guard let _ = pasteboardText.appending("+1").evaluateForValidMathematicalExpression() else {
+                return
+            }
+            self.outputLabel.text = pasteboardText
+            self.calculator.setDefaultInput(pasteboardText)
+        }
+    }
+    
 }
 

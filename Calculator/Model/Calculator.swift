@@ -42,6 +42,7 @@ enum InputType {
 
 class Calculator {
     init() { }
+    
     private var expression: String = "" {
         didSet {
             didUpdateInput?(expression)
@@ -53,7 +54,7 @@ class Calculator {
     var didUpdateResult: ((String) -> Void)?
     var didUpdateInput: ((String) -> Void)?
     
-    func add(_ input: InputType) {
+    func enter(_ input: InputType) {
         if let char = input.character {
             add(char: char)
         }
@@ -66,8 +67,9 @@ class Calculator {
         }
     }
     
-    private func invert() {
-        
+    /// Sets the default input to this value
+    func setDefaultInput(_ input: String) {
+        resetInput = input
     }
     
     private func safeDelete() {
@@ -87,15 +89,20 @@ class Calculator {
             expression = resetInput
             self.resetInput = nil
         }
-        let charSet: [Character] = ["-", "+", "*", "/"]
-        if let last = expression.last, charSet.contains(last), charSet.contains(char) {
+        
+        let invalidStart: [Character] = ["+", "*", "/"]
+        let invalidEnd: [Character] = ["-", "+", "*", "/"]
+        
+        if expression.count == 0, invalidStart.contains(char) {
+            // skip
+        } else if let last = expression.last, invalidEnd.contains(last), invalidEnd.contains(char) {
             expression.removeLast()
             expression.append(char)
         } else if let last = expression.last, char == ".", char == last {
-            // do nothing
+            // skip
         } else if char == "." {
             // Make sure, the expression can evaluate, otherwise ignore
-            guard let _ = evaluate(expression: expression.appending(".0")) else {
+            guard let _ = expression.appending(".0").evaluateForValidMathematicalExpression() else {
                 return
             }
             expression.append(char)
@@ -117,22 +124,12 @@ class Calculator {
             expression.removeFirst()
         }
     
-        if let result = evaluate(expression: self.expression) {
+        if let result = self.expression.evaluateForValidMathematicalExpression() {
             didUpdateResult?(result)
             resetInput = result
         }
     }
     
-    private func evaluate(expression: String) -> String? {
-        var error: NSError!
-        var result = ObjcException.catch({ () -> Any in
-            let result = NSExpression(format: expression).toDouble().expressionValue(with: nil, context: nil)
-            return result ?? ""
-        }, error: &error)
-        if error != nil { return nil }
-        if "\(result)" == "nil" { result = "0" }
-        return "\(result)"
-    }
 }
 
 extension NSExpression {
@@ -150,6 +147,25 @@ extension NSExpression {
         default: break
         }
         return self
+    }
+}
+
+extension String {
+    
+    /**
+        Evaluates if the expression is a valid mathematical expression
+        
+        - returns: the mathematical output if it is valid else nil
+     */
+    func evaluateForValidMathematicalExpression() -> String? {
+        var error: NSError!
+        var result = ObjcException.catch({ () -> Any in
+            let result = NSExpression(format: self).toDouble().expressionValue(with: nil, context: nil)
+            return result ?? ""
+        }, error: &error)
+        if error != nil { return nil }
+        if "\(result)" == "nil" { result = "0" }
+        return "\(result)"
     }
 }
 
