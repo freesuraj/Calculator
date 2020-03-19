@@ -8,16 +8,13 @@
 
 import Foundation
 
-enum Operator {
-    case add, substract, multiply, divide
-    var character: Character? {
-        switch self {
-        case .add: return "+"
-        case .substract: return "-"
-        case .multiply: return "*"
-        case .divide: return "/"
-        }
-    }
+enum Operator: Character, CaseIterable {
+    case add = "+"
+    case substract = "-"
+    case multiply = "*"
+    case divide = "/"
+    
+    static var allOps = Operator.allCases.compactMap { $0.rawValue }
 }
 
 enum InputType {
@@ -34,7 +31,7 @@ enum InputType {
         case .number(let n): return n
         case .clear: return nil
         case .delete: return nil
-        case .op(let op): return op.character
+        case .op(let op): return op.rawValue
         case .equal: return nil
         }
     }
@@ -42,6 +39,9 @@ enum InputType {
 
 class Calculator {
     init() { }
+    
+    private var invalidStartChar: [Character] = ["+", "*", "/"]
+    private var invalidEndChar: [Character] = Operator.allOps
     
     private var expression: String = "" {
         didSet {
@@ -83,23 +83,17 @@ class Calculator {
         didUpdateResult?("0")
     }
     
-    // When op is input, it evaluates and makes sure expression is valid
     private func add(char: Character) {
         if let resetInput = resetInput {
             expression = resetInput
             self.resetInput = nil
         }
         
-        let invalidStart: [Character] = ["+", "*", "/"]
-        let invalidEnd: [Character] = ["-", "+", "*", "/"]
-        
-        if expression.count == 0, invalidStart.contains(char) {
+        if expression.count == 0, invalidStartChar.contains(char) {
             // skip
-        } else if let last = expression.last, invalidEnd.contains(last), invalidEnd.contains(char) {
+        } else if let last = expression.last, invalidEndChar.contains(last), invalidEndChar.contains(char) {
             expression.removeLast()
             expression.append(char)
-        } else if let last = expression.last, char == ".", char == last {
-            // skip
         } else if char == "." {
             // Make sure, the expression can evaluate, otherwise ignore
             guard let _ = expression.appending(".0").evaluateForValidMathematicalExpression() else {
@@ -114,14 +108,9 @@ class Calculator {
     
     /// Calculates the final value of the expression
     private func calculate() {
-        let charSet: [Character] = ["-", "+", "*", "/", "."]
-        if let last = expression.last, charSet.contains(last) {
+        let ignoreLastCharSet: [Character] = invalidEndChar + "."
+        if let last = expression.last, ignoreLastCharSet.contains(last) {
             expression.removeLast()
-        }
-        
-        let invalidFirstCharSet: [Character] = ["+", "*", "/"]
-        if let first = expression.first, invalidFirstCharSet.contains(first) {
-            expression.removeFirst()
         }
     
         if let result = self.expression.evaluateForValidMathematicalExpression() {
@@ -149,23 +138,3 @@ extension NSExpression {
         return self
     }
 }
-
-extension String {
-    
-    /**
-        Evaluates if the expression is a valid mathematical expression
-        
-        - returns: the mathematical output if it is valid else nil
-     */
-    func evaluateForValidMathematicalExpression() -> String? {
-        var error: NSError!
-        var result = ObjcException.catch({ () -> Any in
-            let result = NSExpression(format: self).toDouble().expressionValue(with: nil, context: nil)
-            return result ?? ""
-        }, error: &error)
-        if error != nil { return nil }
-        if "\(result)" == "nil" { result = "0" }
-        return "\(result)"
-    }
-}
-

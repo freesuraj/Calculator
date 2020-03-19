@@ -21,7 +21,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         calculator = Calculator()
         calculator.didUpdateInput = { [unowned self] input in
-            self.inputLabel.text = input
+            self.displayInput(input)
         }
         calculator.didUpdateResult = { [unowned self] output in
             self.displayOutput(output)
@@ -45,17 +45,10 @@ class ViewController: UIViewController {
     
     private func setupMapping() {
         buttonTagToInputTypeMapping = [
-            10: .number("0"),
-            11: .number("1"),
-            12: .number("2"),
-            13: .number("3"),
-            14: .number("4"),
-            15: .number("5"),
-            16: .number("6"),
-            17: .number("7"),
-            18: .number("8"),
-            19: .number("9"),
-            20: .decimal,
+            10: .number("0"), 11: .number("1"), 12: .number("2"),
+            13: .number("3"), 14: .number("4"), 15: .number("5"),
+            16: .number("6"), 17: .number("7"), 18: .number("8"),
+            19: .number("9"), 20: .decimal,
             30: .delete,
             40: .equal,
             50: .clear,
@@ -82,15 +75,14 @@ class ViewController: UIViewController {
         }
     }
     
+    /// Formats the input in more readable style
+    private func displayInput(_ text: String) {
+        inputLabel.text = text.formattedExpressionOutput()
+    }
+    
     /// Formats the output in more readable style
     private func displayOutput(_ text: String) {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        numberFormatter.usesGroupingSeparator = true
-        numberFormatter.groupingSize = 3
-        if let double = Double(text) {
-           self.outputLabel.text = numberFormatter.string(from: NSNumber(value: double))
-        }
+        outputLabel.text = text.formattedNumberOutput()
     }
     
 }

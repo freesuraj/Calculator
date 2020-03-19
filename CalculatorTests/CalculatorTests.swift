@@ -91,6 +91,28 @@ class CalculatorTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
     
+    func testConsecutiveDecimalEntry() {
+        // 9...5 + .6 = 10.1 // decimals after the first decimal will be ignored
+        let expectation = XCTestExpectation(description: "multipleDecimalIgnored")
+        calculator.didUpdateResult = { result in
+            print("result: \(result)")
+            if result == "10.1" { expectation.fulfill() }
+        }
+        calculator.evaluateInputs(.number("9"), .decimal, .decimal, .decimal, .number("5"), .op(.add), .decimal, .number("6"))
+        wait(for: [expectation], timeout: 1.0)
+    }
+    
+    func testConsecutiveOperatorsEntry() {
+           // 9+-*5 + 1 = 46 // the last operator will override the previous operator
+           let expectation = XCTestExpectation(description: "multipleDecimalIgnored")
+           calculator.didUpdateResult = { result in
+               print("result: \(result)")
+               if result == "46" { expectation.fulfill() }
+           }
+        calculator.evaluateInputs(.number("9"), .op(.add), .op(.substract), .op(.multiply), .number("5"), .op(.add), .number("1"))
+           wait(for: [expectation], timeout: 1.0)
+       }
+    
     
     func testZeroDivision() {
         // 9/0 = inf
