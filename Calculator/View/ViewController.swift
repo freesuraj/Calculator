@@ -24,7 +24,7 @@ class ViewController: UIViewController {
             self.inputLabel.text = input
         }
         calculator.didUpdateResult = { [unowned self] output in
-            self.outputLabel.text = output
+            self.displayOutput(output)
         }
         setupButtons()
         setupMapping()
@@ -77,8 +77,19 @@ class ViewController: UIViewController {
             guard let _ = pasteboardText.appending("+1").evaluateForValidMathematicalExpression() else {
                 return
             }
-            self.outputLabel.text = pasteboardText
+            self.displayOutput(pasteboardText)
             self.calculator.setDefaultInput(pasteboardText)
+        }
+    }
+    
+    /// Formats the output in more readable style
+    private func displayOutput(_ text: String) {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        numberFormatter.usesGroupingSeparator = true
+        numberFormatter.groupingSize = 3
+        if let double = Double(text) {
+           self.outputLabel.text = numberFormatter.string(from: NSNumber(value: double))
         }
     }
     
